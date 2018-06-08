@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNull;
 public class MemoryTaskSchedulerTest {
 
 
-  public static final String PROJECT_NAME = "test";
+  private static final String PROJECT_NAME = "test";
 
   @Test
   public void test() {

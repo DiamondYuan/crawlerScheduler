@@ -10,6 +10,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @author diamondyuan
@@ -23,6 +26,10 @@ public class MemoryTaskScheduler implements TaskScheduler {
   private Map<String, PriorityBlockingQueue<CrawlerTask>> task;
   private Map<String, Set<CrawlerTask>> doingTaskMap;
 
+  private final ReadWriteLock lock = new ReentrantReadWriteLock();
+  private final Lock r = lock.readLock();
+  private final Lock w = lock.writeLock();
+
 
   public MemoryTaskScheduler() {
     this.tasksFilter = new ConcurrentHashMap<>();
@@ -34,8 +41,8 @@ public class MemoryTaskScheduler implements TaskScheduler {
 
   @Override
   public void pushTask(String project, CrawlerTask crawlerTask) {
-    synchronized (this) {
-    }
+    r.lock();
+    r.unlock();
     if (tasksFilter.containsKey(project) || (tasksFilter.putIfAbsent(project, crawlerTaskSet(crawlerTask)) != null)) {
       if (!tasksFilter.get(project).add(crawlerTask)) {
         return;
@@ -69,8 +76,8 @@ public class MemoryTaskScheduler implements TaskScheduler {
 
   @Override
   public CrawlerTask pollTask(String project) {
-    synchronized (this) {
-    }
+    r.lock();
+    r.unlock();
     PriorityBlockingQueue<CrawlerTask> priorityBlockingQueue = task.get(project);
     CrawlerTask crawlerTask;
     if (priorityBlockingQueue == null || (crawlerTask = priorityBlockingQueue.poll()) == null) {
@@ -84,8 +91,8 @@ public class MemoryTaskScheduler implements TaskScheduler {
 
   @Override
   public void completeTask(String project, CrawlerTask crawlerTask) {
-    synchronized (this) {
-    }
+    r.lock();
+    r.unlock();
     boolean result = doingTaskMap.get(project).remove(crawlerTask);
     if (!result) {
       return;
@@ -96,14 +103,14 @@ public class MemoryTaskScheduler implements TaskScheduler {
   }
 
   @Override
-  public synchronized void clearProject(String project) {
-    synchronized (this) {
-      doingTaskMap.remove(project);
-      taskCountMap.remove(project);
-      tasksFilter.remove(project);
-      completeTaskCountMap.remove(project);
-      task.remove(project);
-    }
+  public  void clearProject(String project) {
+    w.lock();
+    doingTaskMap.remove(project);
+    taskCountMap.remove(project);
+    tasksFilter.remove(project);
+    completeTaskCountMap.remove(project);
+    task.remove(project);
+    w.unlock();
   }
 
   @Override
@@ -111,7 +118,6 @@ public class MemoryTaskScheduler implements TaskScheduler {
     int doing = 0;
     int all = 0;
     int complete = 0;
-
     if (taskCountMap.containsKey(project)) {
       all = taskCountMap.get(project).get();
     }
