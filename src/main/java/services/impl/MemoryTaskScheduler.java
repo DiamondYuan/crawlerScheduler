@@ -84,6 +84,8 @@ public class MemoryTaskScheduler implements TaskScheduler {
 
   @Override
   public void completeTask(String project, CrawlerTask crawlerTask) {
+    synchronized (this) {
+    }
     boolean result = doingTaskMap.get(project).remove(crawlerTask);
     if (!result) {
       return;
