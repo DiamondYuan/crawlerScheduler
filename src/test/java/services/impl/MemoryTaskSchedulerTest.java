@@ -16,7 +16,6 @@ public class MemoryTaskSchedulerTest {
   @Test
   public void test() {
     TaskScheduler taskScheduler = new MemoryTaskScheduler();
-
     // 初始化状态全部任务为 0
     assertEquals(taskScheduler.status(PROJECT_NAME), new Status() {{
       setDoing(0);

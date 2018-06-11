@@ -2,11 +2,11 @@ package domain;
 
 import lombok.Data;
 
-import java.util.Map;
+import java.util.List;
 
 @Data
 public class CrawlerTask {
   private String url;
-  private Map<String, String> info;
+  private List<Info> info;
   private Integer weight;
 }
