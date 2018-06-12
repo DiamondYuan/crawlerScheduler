@@ -1,7 +1,5 @@
 # crawlerScheduler
-![](https://travis-ci.org/DiamondYuan/crawlerScheduler.svg?branch=master)
-
-![](https://img.shields.io/codecov/c/github/diamondyuan/crawlerScheduler.svg)
+![](https://travis-ci.org/DiamondYuan/crawlerScheduler.svg?branch=master)![](https://img.shields.io/codecov/c/github/diamondyuan/crawlerScheduler.svg)![](https://img.shields.io/docker/build/diamondyuan/crawlerScheduler.svg)
 
 a Scheduler for crawler
 
