@@ -33,10 +33,33 @@ public class TestController {
 
   @Test
   public void testModelObjectsPOST() throws Exception {
+
+
     CrawlerTask crawlerTask = new CrawlerTask() {{
       setUrl("http://baidu.com");
       setWeight(1);
     }};
+
+    {
+      TestResponse testResponse = testRequestUtil.post("/tasks", crawlerTask);
+      assertEquals(400, testResponse.getCode());
+    }
+
+    {
+      TestResponse testResponse = testRequestUtil.post("/tasks?project=test", new CrawlerTask() {{
+        setWeight(1);
+      }});
+      assertEquals(400, testResponse.getCode());
+    }
+
+    {
+      TestResponse testResponse = testRequestUtil.post("/tasks?project=test", new CrawlerTask() {{
+        setUrl("http://baidu.com");
+      }});
+      assertEquals(400, testResponse.getCode());
+    }
+
+
     TestResponse testResponse = testRequestUtil.post("/tasks?project=test", crawlerTask);
     assertEquals(200, testResponse.getCode());
 

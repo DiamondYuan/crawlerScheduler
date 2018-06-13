@@ -1,9 +1,13 @@
 package services.impl;
 
 import domain.CrawlerTask;
+import domain.Info;
 import domain.Status;
 import org.junit.Test;
 import services.TaskScheduler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -24,10 +28,17 @@ public class MemoryTaskSchedulerTest {
     }});
 
 
+    List<Info> infoList = new ArrayList<>();
+    infoList.add(new Info() {{
+      setKey("type");
+      setValue("test");
+    }});
+
     // 提交任务 预期任务数 1
     CrawlerTask task1 = new CrawlerTask() {{
       setUrl("http://www.google.com");
       setWeight(1);
+      setInfo(infoList);
     }};
     taskScheduler.pushTask(PROJECT_NAME, task1);
     assertEquals(taskScheduler.status(PROJECT_NAME), new Status() {{
