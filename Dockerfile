@@ -12,5 +12,5 @@ FROM java:8-jre
 
 COPY --from=build /srv/build/libs/*.jar /srv/
 
-ENTRYPOINT ["java", "-server", "-jar", "/srv/crawlerScheduler-0.1.jar"]
+ENTRYPOINT ["java", "-server", "-jar", "/srv/srv-0.1.jar"]
 
