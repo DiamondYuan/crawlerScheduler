@@ -26,14 +26,14 @@ public class TaskController {
       }
       projectThreadLocal.set(project);
     });
-    get("/tasks", (req, res) -> new Response<>(taskScheduler.pollTask(projectThreadLocal.get())), this::toJson);
+    get("/api/v1/tasks", (req, res) -> new Response<>(taskScheduler.pollTask(projectThreadLocal.get())), this::toJson);
 
-    post("/tasks/clear", (request, response) -> {
+    post("/api/v1/tasks/clear", (request, response) -> {
       taskScheduler.clearProject(projectThreadLocal.get());
       return new Response<>("success");
     }, this::toJson);
 
-    post("/tasks", (request, response) -> {
+    post("/api/v1/tasks", (request, response) -> {
       CrawlerTask crawlerTask = objectMapper.readValue(request.body(), CrawlerTask.class);
       if (crawlerTask.getUrl() == null || crawlerTask.getWeight() == null) {
         throw new IllegalArgumentException("error url or weight can't be null");
@@ -42,7 +42,7 @@ public class TaskController {
       return new Response<>("success");
     }, this::toJson);
 
-    post("/tasks/complete", (request, response) -> {
+    post("/api/v1/tasks/complete", (request, response) -> {
       CrawlerTask crawlerTask = objectMapper.readValue(request.body(), CrawlerTask.class);
       if (crawlerTask.getWeight() == null || crawlerTask.getUrl() == null) {
         throw new IllegalArgumentException("error url or weight can't be null");

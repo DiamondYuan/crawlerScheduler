@@ -41,26 +41,26 @@ public class TestController {
     }};
 
     {
-      TestResponse testResponse = testRequestUtil.post("/tasks", crawlerTask);
+      TestResponse testResponse = testRequestUtil.post("api/v1/tasks", crawlerTask);
       assertEquals(400, testResponse.getCode());
     }
 
     {
-      TestResponse testResponse = testRequestUtil.post("/tasks?project=test", new CrawlerTask() {{
+      TestResponse testResponse = testRequestUtil.post("api/v1//tasks?project=test", new CrawlerTask() {{
         setWeight(1);
       }});
       assertEquals(400, testResponse.getCode());
     }
 
     {
-      TestResponse testResponse = testRequestUtil.post("/tasks?project=test", new CrawlerTask() {{
+      TestResponse testResponse = testRequestUtil.post("api/v1/tasks?project=test", new CrawlerTask() {{
         setUrl("http://baidu.com");
       }});
       assertEquals(400, testResponse.getCode());
     }
 
 
-    TestResponse testResponse = testRequestUtil.post("/tasks?project=test", crawlerTask);
+    TestResponse testResponse = testRequestUtil.post("api/v1/tasks?project=test", crawlerTask);
     assertEquals(200, testResponse.getCode());
 
 
