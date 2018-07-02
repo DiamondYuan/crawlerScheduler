@@ -93,8 +93,7 @@ public class MemoryTaskScheduler implements TaskScheduler {
   public void completeTask(String project, CrawlerTask crawlerTask) {
     r.lock();
     r.unlock();
-    boolean result = doingTaskMap.get(project).remove(crawlerTask);
-    if (!result) {
+    if (!doingTaskMap.containsKey(project) || !doingTaskMap.get(project).remove(crawlerTask)) {
       return;
     }
     if (completeTaskCountMap.containsKey(project) || (completeTaskCountMap.putIfAbsent(project, new AtomicInteger(1)) != null)) {
@@ -103,7 +102,7 @@ public class MemoryTaskScheduler implements TaskScheduler {
   }
 
   @Override
-  public  void clearProject(String project) {
+  public void clearProject(String project) {
     w.lock();
     doingTaskMap.remove(project);
     taskCountMap.remove(project);

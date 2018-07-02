@@ -102,6 +102,68 @@ public class MemoryTaskSchedulerTest {
 
 
   @Test
+  public void testComplateTask() {
+    List<Info> infoList = new ArrayList<>();
+    infoList.add(new Info() {{
+      setKey("type");
+      setValue("test");
+    }});
+    // 提交任务 预期任务数 1
+    CrawlerTask task1 = new CrawlerTask() {{
+      setUrl("http://www.google.com");
+      setWeight(1);
+      setInfo(infoList);
+    }};
+
+
+    TaskScheduler taskScheduler = new MemoryTaskScheduler();
+
+
+    //测试传输错误的 Project Name
+    taskScheduler.completeTask("test2", null);
+
+
+    //测试提交任务 未领取后完成任务 完成数为0
+    taskScheduler.pushTask("test", task1);
+    taskScheduler.completeTask("test", task1);
+    assertEquals(taskScheduler.status(PROJECT_NAME), new Status() {{
+      setDoing(0);
+      setComplete(0);
+      setAll(1);
+    }});
+
+
+    taskScheduler.pollTask("test");
+    CrawlerTask task2 = new CrawlerTask() {{
+      setUrl("http://www.google.com");
+      setWeight(1);
+    }};
+    taskScheduler.completeTask("test", task2);
+    assertEquals(taskScheduler.status(PROJECT_NAME), new Status() {{
+      setDoing(1);
+      setComplete(0);
+      setAll(1);
+    }});
+
+
+    taskScheduler.completeTask("test2", task1);
+    assertEquals(new Status() {{
+      setDoing(1);
+      setComplete(0);
+      setAll(1);
+    }}, taskScheduler.status(PROJECT_NAME));
+
+
+    taskScheduler.completeTask("test", task1);
+    assertEquals(new Status() {{
+      setDoing(0);
+      setComplete(1);
+      setAll(1);
+    }}, taskScheduler.status(PROJECT_NAME));
+  }
+
+
+  @Test
   public void testWeight() {
     // 提交任务 预期任务数 1
     CrawlerTask task1 = new CrawlerTask() {{
