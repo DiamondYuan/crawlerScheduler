@@ -62,8 +62,6 @@ public class TestController {
 
     TestResponse testResponse = testRequestUtil.post("api/v1/tasks?project=test", crawlerTask);
     assertEquals(200, testResponse.getCode());
-
-
   }
 
 }
