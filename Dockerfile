@@ -1,4 +1,4 @@
-FROM gradle as build
+FROM gradle:jdk10 as build
 
 WORKDIR /srv
 
@@ -8,9 +8,8 @@ add . /srv
 
 RUN  gradle build
 
-FROM java:8-jre
+FROM openjdk:10-jre-slim
 
-COPY --from=build /srv/build/libs/*.jar /srv/
+COPY --from=build /srv/build/libs/crawlerScheduler-0.1.jar /srv/
 
-ENTRYPOINT ["java", "-server", "-jar", "/srv/srv-0.1.jar"]
-
+ENTRYPOINT ["java", "-server", "-jar", "/srv/crawlerScheduler-0.1.jar"]

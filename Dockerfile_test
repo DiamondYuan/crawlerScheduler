@@ -1,0 +1,9 @@
+FROM gradle:jdk10 as build
+
+WORKDIR /srv
+
+USER root
+
+add . /srv
+
+RUN  gradle test jacocoTestReport

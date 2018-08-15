@@ -1,8 +1,11 @@
-language: java
-jdk: oraclejdk8
+sudo: required
+
+services:
+  - docker
 
 script:
-- gradle test jacocoTestReport
-
+  - docker build -t test:test -f Dockerfile_test .
+  
 after_success:
+  - docker run --rm -v $(pwd)/tmp:/tmp test:test sh -c "cp -r /srv/* /tmp"
   - bash <(curl -s https://codecov.io/bash)
